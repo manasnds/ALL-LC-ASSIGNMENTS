@@ -1,0 +1,111 @@
+#include <stdio.h>
+
+/* Structure to store details of one device */
+struct Device
+{
+    int   id;
+    char  type[10];     
+    float vf;           
+    float ir;            
+    float vr;           
+    int   status;       
+};
+
+int main()
+{
+    struct Device d[100];
+    int n, i, choice, failCount = 0;
+    float maxVf, maxIr, minVr;
+
+    printf("Enter the number of devices: ");
+    scanf("%d", &n);
+
+    /* Step 3: accept the details of each device */
+    for (i = 0; i < n; i++)
+    {
+        printf("\n Device %d \n", i + 1);
+        printf("Enter Device ID: ");
+        scanf("%d", &d[i].id);
+
+        printf("Select Device Type\n");
+        printf("1. Diode\n2. BJT\n3. MOSFET\n4. LED\n");
+        printf("Enter choice (1-4): ");
+        scanf("%d", &choice);
+
+        /* Step 4: get the specification limits for the device type */
+        switch (choice)
+        {
+            case 1:
+                sprintf(d[i].type, "Diode");
+                maxVf = 0.8;  maxIr = 5;   minVr = 50;
+                break;
+            case 2:
+                sprintf(d[i].type, "BJT");
+                maxVf = 0.9;  maxIr = 10;  minVr = 40;
+                break;
+            case 3:
+                sprintf(d[i].type, "MOSFET");
+                maxVf = 4.0;  maxIr = 1;   minVr = 60;
+                break;
+            case 4:
+                sprintf(d[i].type, "LED");
+                maxVf = 3.6;  maxIr = 10;  minVr = 5;
+                break;
+            default:
+                printf("Invalid choice! Treating as Diode.\n");
+                sprintf(d[i].type, "Diode");
+                maxVf = 0.8;  maxIr = 5;   minVr = 50;
+        }
+
+        printf("Enter Forward Voltage Vf (V): ");
+        scanf("%f", &d[i].vf);
+        printf("Enter Reverse Leakage Current Ir (uA): ");
+        scanf("%f", &d[i].ir);
+        printf("Enter Rated Voltage Vr (V): ");
+        scanf("%f", &d[i].vr);
+
+        /* Steps 5 and 6: compare measured values with limits */
+        if (d[i].vf > maxVf || d[i].ir > maxIr || d[i].vr < minVr)
+        {
+            d[i].status = 0;     /* Fail */
+            failCount++;
+        }
+        else
+        {
+            d[i].status = 1;     /* Pass */
+        }
+    }
+
+    /* Step 7: display details of all devices */
+    printf("\n DEVICE DETAILS \n");
+    printf("%-6s %-8s %-8s %-8s %-8s %-6s\n",
+           "ID", "Type", "Vf(V)", "Ir(uA)", "Vr(V)", "Status");
+    printf("------------------------------------------------\n");
+
+    for (i = 0; i < n; i++)
+    {
+        printf("%-6d %-8s %-8.2f %-8.2f %-8.2f %-6s\n",
+               d[i].id, d[i].type, d[i].vf, d[i].ir, d[i].vr,
+               d[i].status == 1 ? "PASS" : "FAIL");
+    }
+
+    /* Step 8: display list and count of failed devices */
+    printf("\n OUT OF SPECIFICATION DEVICES \n");
+    if (failCount == 0)
+    {
+        printf("No device failed. All devices are within limits.\n");
+    }
+    else
+    {
+        for (i = 0; i < n; i++)
+        {
+            if (d[i].status == 0)
+            {
+                printf("Device ID: %d, Type: %s\n", d[i].id, d[i].type);
+            }
+        }
+    }
+    printf("Total failed devices = %d\n", failCount);
+
+    return 0;
+}
