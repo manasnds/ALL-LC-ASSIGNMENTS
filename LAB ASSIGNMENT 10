@@ -1,0 +1,59 @@
+
+#include <stdio.h>
+
+int main()
+{
+    int year, month, day, daysInMonth[12];
+    int totalDays = 0, startDay;
+
+    char *monthName[] = {
+        "January", "February", "March", "April",
+        "May", "June", "July", "August",
+        "September", "October", "November", "December"
+    };
+
+    printf("Enter year: ");
+    scanf("%d", &year);
+
+    daysInMonth[0] = 31;
+
+    daysInMonth[1] = ((year % 400 == 0) ||
+                     (year % 4 == 0 && year % 100 != 0)) ? 29 : 28;
+
+    daysInMonth[2] = 31;
+    daysInMonth[3] = 30;
+    daysInMonth[4] = 31;
+    daysInMonth[5] = 30;
+    daysInMonth[6] = 31;
+    daysInMonth[7] = 31;
+    daysInMonth[8] = 30;
+    daysInMonth[9] = 31;
+    daysInMonth[10] = 30;
+    daysInMonth[11] = 31;
+
+    startDay = (year + (year - 1) / 4 -
+                (year - 1) / 100 +
+                (year - 1) / 400) % 7;
+
+    for (month = 0; month < 12; month++)
+    {
+        printf("\n\n%s %d\n", monthName[month], year);
+
+        printf("Sun Mon Tue Wed Thu Fri Sat\n");
+
+        for (day = 0; day < startDay; day++)
+            printf("    ");
+
+        for (day = 1; day <= daysInMonth[month]; day++)
+        {
+            printf("%3d ", day);
+
+            if ((day + startDay) % 7 == 0)
+                printf("\n");
+        }
+
+        startDay = (startDay + daysInMonth[month]) % 7;
+    }
+
+    return 0;
+}
